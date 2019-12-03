@@ -39,6 +39,8 @@ void term_putc(char c) {
         default: {
             const size_t index = (VGA_COLS * term_row) + term_col;
             vga_buffer[index] = ((uint16_t)term_color << 8) | c;
+            term_col++;
+            break;
         }
     }
     
