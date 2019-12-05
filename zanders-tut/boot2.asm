@@ -3,16 +3,15 @@ org 0x7c00
 
 boot:
     mov ax, 0x2401
-    int 0x15 ; enable A20 bit
+    int 0x15 ; enable A20 bit   
+    mov ax, 0x3
+    int 0x10 ; set VGA text mode to 3
     
-mov ax, 0x3
-int 0x10 ; set VGA text mode to 3
-    
-lgdt [gdt_pointer] ; load the gdt table
-mov eax, cr0
-or eax,0x1 ; set the protected mode bit on special CPU reg cr0
-mov cr0, eax
-jmp CODE_SEG:boot2 ; long jump to the code segment
+    lgdt [gdt_pointer] ; load the gdt table
+    mov eax, cr0
+    or eax,0x1 ; set the protected mode bit on special CPU reg cr0
+    mov cr0, eax
+    jmp CODE_SEG:boot2 ; long jump to the code segment
 
 gdt_start:
     dq 0x0
@@ -47,7 +46,6 @@ boot2:
     mov fs, ax
     mov gs, ax
     mov ss, ax
-
     mov esi,hello
     mov ebx,0xb8000
 .loop:
@@ -62,3 +60,6 @@ halt:
     cli
     hlt
 hello: db "Hello World!",0
+
+times 510 - ($-$$) db 0
+dw 0xaa55
